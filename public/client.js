@@ -16,6 +16,11 @@ var operand1 = 0;
 var operand2 = 0;
 var operation = null;
 
+// Cache DOM elements for better performance
+var loadingElement = null;
+var resultElement = null;
+var buttonElements = null;
+
 function calculate(operand1, operand2, operation) {
     var uri = location.origin + "/arithmetic";
 
@@ -185,11 +190,6 @@ function setValue(n) {
     }
     resultElement.innerHTML = htmlParts.join('');
 }
-
-// Cache DOM elements for better performance
-var loadingElement = null;
-var resultElement = null;
-var buttonElements = null;
 
 function setError(n) {
     if (!resultElement) {
