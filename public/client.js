@@ -33,13 +33,20 @@ function calculate(operand1, operand2, operation) {
         case '/':
             uri += "?operation=divide";
             break;
+        case '√':
+            uri += "?operation=sqrt";
+            break;
         default:
             setError();
             return;
     }
 
     uri += "&operand1=" + encodeURIComponent(operand1);
-    uri += "&operand2=" + encodeURIComponent(operand2);
+    
+    // operand2 is optional for unary operations
+    if (operation !== '√') {
+        uri += "&operand2=" + encodeURIComponent(operand2);
+    }
 
     setLoading(true);
 
@@ -130,6 +137,13 @@ function equalPressed() {
     }
 
     calculate(operand1, operand2, operation);
+}
+
+function sqrtPressed() {
+    operand1 = getValue();
+    operation = '√';
+    state = states.complete;
+    calculate(operand1, null, operation);
 }
 
 // TODO: Add key press logics
