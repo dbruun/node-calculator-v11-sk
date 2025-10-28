@@ -85,8 +85,6 @@ function numberPressed(digit) {
         displayedValue += digit;
     }
 
-    displayedValue += "";
-
     setValue(displayedValue);
 }
 
@@ -181,7 +179,7 @@ function setValue(newValue) {
     document.getElementById("result").innerHTML = htmlOutput;
 }
 
-function setError(errorValue) {
+function setError() {
     document.getElementById("result").innerHTML = "ERROR";
 }
 
