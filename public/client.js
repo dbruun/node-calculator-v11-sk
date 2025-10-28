@@ -16,6 +16,11 @@ var operand1 = 0;
 var operand2 = 0;
 var operation = null;
 
+// Cache DOM elements for better performance
+var loadingElement = null;
+var resultElement = null;
+var buttonElements = null;
+
 function calculate(operand1, operand2, operation) {
     var uri = location.origin + "/arithmetic";
 
@@ -91,14 +96,16 @@ function numberPressed(n) {
 }
 
 function decimalPressed() {
+    var currentValue = getValue();
+    
     if (state == states.start || state == states.complete) {
         setValue('0.');
         state = states.operand1;
     } else if (state == states.operator) {
         setValue('0.');
         state = states.operand2;
-    } else if (!getValue().toString().includes('.')) {
-        setValue(getValue() + '.');
+    } else if (!currentValue.toString().includes('.')) {
+        setValue(currentValue + '.');
     }
 }
 
@@ -164,37 +171,47 @@ function setValue(n) {
     }
 
     var chars = displayValue.toString().split("");
-    var html = "";
+    var htmlParts = [];
 
     for (var c of chars) {
         if (c == '-') {
-            html += "<span class=\"resultchar negative\">" + c + "</span>";
+            htmlParts.push("<span class=\"resultchar negative\">" + c + "</span>");
         } else if (c == '.') {
-            html += "<span class=\"resultchar decimal\">" + c + "</span>";
+            htmlParts.push("<span class=\"resultchar decimal\">" + c + "</span>");
         } else if (c == 'e') {
-            html += "<span class=\"resultchar exponent\">e</span>";
+            htmlParts.push("<span class=\"resultchar exponent\">e</span>");
         } else if (c != '+') {
-            html += "<span class=\"resultchar digit" + c + "\">" + c + "</span>";
+            htmlParts.push("<span class=\"resultchar digit" + c + "\">" + c + "</span>");
         }
     }
 
-    document.getElementById("result").innerHTML = html;
+    if (!resultElement) {
+        resultElement = document.getElementById("result");
+    }
+    resultElement.innerHTML = htmlParts.join('');
 }
 
 function setError(n) {
-    document.getElementById("result").innerHTML = "ERROR";
+    if (!resultElement) {
+        resultElement = document.getElementById("result");
+    }
+    resultElement.innerHTML = "ERROR";
 }
 
 function setLoading(loading) {
-    if (loading) {
-        document.getElementById("loading").style.visibility = "visible";
-    } else {
-        document.getElementById("loading").style.visibility = "hidden";
+    // Cache DOM elements on first use
+    if (!loadingElement) {
+        loadingElement = document.getElementById("loading");
+        buttonElements = document.querySelectorAll("BUTTON");
     }
 
-    var buttons = document.querySelectorAll("BUTTON");
+    if (loading) {
+        loadingElement.style.visibility = "visible";
+    } else {
+        loadingElement.style.visibility = "hidden";
+    }
 
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = loading;
+    for (var i = 0; i < buttonElements.length; i++) {
+        buttonElements[i].disabled = loading;
     }
 }
