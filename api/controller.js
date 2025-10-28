@@ -43,5 +43,9 @@ exports.calculate = function(req, res) {
     }
   }
 
-  res.json({ result: operation(req.query.operand1, req.query.operand2) });
+  var result = req.query.operation === 'sqrt' 
+    ? operation(req.query.operand1)
+    : operation(req.query.operand1, req.query.operand2);
+
+  res.json({ result: result });
 };
